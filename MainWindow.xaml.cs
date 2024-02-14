@@ -1,7 +1,5 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using static System.Math;
 
@@ -45,6 +43,33 @@ namespace ChartWF
 				Error("Нижний порог должен быть меньше чем верхний порог");
 				return;
 			}
+			#endregion
+
+			#region Coefficients
+			double k1, k2, k3, k4;
+			
+			if (!double.TryParse(k1Box.Text, out k1))
+			{
+				Error("Первый коэффициент не верен");
+				return;
+			}
+			if (!double.TryParse(k1Box.Text, out k2))
+			{
+				Error("Второй коэффициент не верен");
+				return;
+			}
+			if (!double.TryParse(k1Box.Text, out k3))
+			{
+				Error("Третий коэффициент не верен");
+				return;
+			}
+			if (!double.TryParse(k1Box.Text, out k4))
+			{
+				Error("Четвёртый коэффициент не верен");
+				return;
+			}
+
+			#endregion
 
 			area.AxisX.Minimum = low;
 			area.AxisX.Maximum = height;
@@ -53,13 +78,11 @@ namespace ChartWF
 			mainSeries.Points.Clear();
 			for (double x = low; x <= height; x += step)
 			{
-				double y = Formule(x, 1, 1, 1, 1);
+				double y = Formula(x, k1, k2, k3, k4);
 				string[] row = { x.ToString(), y.ToString("0.000") };
 				mainSeries.Points.AddXY(x, y);
 				dataGridView.Rows.Add(row);
 			}
-
-			#endregion
 		}
 
 		public MainWindow()
@@ -122,7 +145,7 @@ namespace ChartWF
 			chart.Series.Add(sinSeries);
 		}
 
-		private static double Formule(double x, double k1, double k2, double k3, double k4)
+		private static double Formula(double x, double k1, double k2, double k3, double k4)
 			=> k1 * Sin(k2 * x + k3) + k4;
 	}
 }
